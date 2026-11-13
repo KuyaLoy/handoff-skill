@@ -4,6 +4,9 @@ All notable changes to the handoff skill. Format: [Keep a Changelog](https://kee
 Versions: [Semantic Versioning](https://semver.org/) (fix = patch, new rule = minor, changed workflow = major).
 
 ## [Unreleased]
+- Release automation: the `check` workflow validates every pull request and makes a skill change come with a new
+  version; the `release` workflow tags each new version and publishes it with `handoff.zip`. README: how to turn on
+  automatic updates, and that colleagues using a shared claude.ai skill get updates by themselves.
 
 ## [1.0.0] - 2026-11-13
 
