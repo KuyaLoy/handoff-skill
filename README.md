@@ -29,7 +29,9 @@ Pick **one** way per computer. Two installs load two copies of the skill.
 
 **claude.ai or the Claude desktop app** (chat, Cowork and the Code tab):
 download `handoff.zip` from the [latest release](https://github.com/KuyaLoy/handoff-skill/releases/latest), then go to
-Customize > Skills > Upload a skill. On a Team or Enterprise plan you can share it with colleagues from the same page.
+Customize > Skills > Upload a skill. On a Team or Enterprise plan you can share it with colleagues from the same page:
+colleagues who use your shared skill get your updates by themselves the next time they use it, so one person uploads
+and the others use the shared copy.
 
 **Claude Code plugin:**
 
@@ -38,7 +40,19 @@ Customize > Skills > Upload a skill. On a Team or Enterprise plan you can share 
 /plugin install handoff@handoff
 ```
 
-**By hand:** copy `skills/handoff/` into `~/.claude/skills/`.
+Then turn on automatic updates (once): `/plugin` > Marketplaces > handoff > Enable auto-update. Or add this to
+`~/.claude/settings.json`:
+
+```json
+"extraKnownMarketplaces": {
+  "handoff": {
+    "source": { "source": "github", "repo": "KuyaLoy/handoff-skill" },
+    "autoUpdate": true
+  }
+}
+```
+
+**By hand:** copy `skills/handoff/` into `~/.claude/skills/` (no automatic updates).
 
 ## Make it load every session (recommended)
 
@@ -53,13 +67,17 @@ The skill's description makes Claude load it in project folders. To make it a ru
 
 ## Update
 
-- claude.ai or desktop app: download the new `handoff.zip` and upload it the same way. If the replace doesn't work,
-  delete the old skill first (Customize > Skills > ... > Delete), then upload.
-- Plugin: `/plugin marketplace update handoff`, then `/plugin update handoff@handoff`, or turn on auto-update for this
-  marketplace in `/plugin` > Marketplaces (off by default for third-party marketplaces).
-- By hand: copy the new `skills/handoff/` over the old one.
+- claude.ai or desktop app: claude.ai can't update a skill from GitHub by itself. Download the new `handoff.zip` and
+  upload it the same way (choose "Upload and replace"). If the replace doesn't work, delete the old skill first
+  (Customize > Skills > ... > Delete), then upload. Colleagues using your shared skill then get it at next use.
+- Plugin: with auto-update on (see Install), Claude Code updates it by itself: a few minutes after the first message
+  of a chat it checks this repository and installs a new version when the version number changed ("Plugin updated";
+  run `/reload-plugins` or open a new chat). By hand: `/plugin marketplace update handoff`, then
+  `/plugin update handoff@handoff`. Turn it off: `/plugin` > Marketplaces > handoff > Disable auto-update.
+- Git clone: `git pull --ff-only`. By hand: copy the new `skills/handoff/` over the old one.
 
-What changed is in [CHANGELOG.md](CHANGELOG.md).
+Every release is a [GitHub Release](https://github.com/KuyaLoy/handoff-skill/releases) with `handoff.zip`
+(Watch > Custom > Releases emails you each one); what changed is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Uninstall
 
