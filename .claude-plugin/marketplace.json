@@ -1,0 +1,13 @@
+{
+  "name": "handoff",
+  "owner": { "name": "KuyaLoy", "url": "https://github.com/KuyaLoy" },
+  "description": "The handoff plugin: keep handoff.md and ai-handoff-summary.md in every project so work survives new chats, compactions and tool switches.",
+  "plugins": [
+    {
+      "name": "handoff",
+      "source": "./",
+      "description": "Keeps handoff.md and ai-handoff-summary.md in every project folder.",
+      "category": "productivity"
+    }
+  ]
+}

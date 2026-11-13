@@ -1,0 +1,10 @@
+{
+  "name": "handoff",
+  "version": "1.0.0",
+  "description": "Keeps two handoff files in every project: handoff.md (the full log) and ai-handoff-summary.md (a short, checked brief), so any chat or AI can pick up the work cold.",
+  "author": { "name": "KuyaLoy", "url": "https://github.com/KuyaLoy" },
+  "homepage": "https://github.com/KuyaLoy/handoff-skill",
+  "repository": "https://github.com/KuyaLoy/handoff-skill",
+  "license": "MIT",
+  "keywords": ["handoff", "context", "session-notes", "project-log", "compaction", "anti-hallucination"]
+}
