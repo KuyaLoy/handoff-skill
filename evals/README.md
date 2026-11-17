@@ -1,0 +1,20 @@
+# Evals: behaviour cases for the handoff skill
+
+Each case is a folder: `setup.sh` builds the starting project, `prompt.md` is what the user says, and
+`graders/checks.md` lists what must be true afterwards. Most cases end with the summary checker passing.
+
+Run a case (any AI tool that can run a shell):
+1. Make an empty scratch folder, `cd` into it and run `sh <repo>/evals/<case>/setup.sh`.
+2. Start a fresh chat or agent in that folder with the skill loaded (or tell it to read `skills/handoff/SKILL.md`
+   and follow it), and give it the text of `prompt.md`.
+3. Check every line of `graders/checks.md`. A case passes when all of them hold.
+
+Run all four after any change to the skill's rules. The layout follows `claude plugin eval` (prompt.md and graders/),
+which was in early access when these were written, so for now they are run by hand or by an agent.
+
+| Case | What it tests |
+|---|---|
+| new-project | creates both files in a project that has none; the summary passes the checker |
+| fix-limits | an update fixes a summary that breaks the limits, without losing facts |
+| archive | handoff.md over 100 KB: old entries move to handoff-archive.md, with pointer lines |
+| compact-prompt | before a compact: files updated, then a resume prompt in one code block |

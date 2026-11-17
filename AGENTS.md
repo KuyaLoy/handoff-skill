@@ -16,6 +16,8 @@ Read `skills/handoff/SKILL.md` and follow it.
 - No real names of people, clients, companies or sites. Examples use generic names and example.com.
 - Before a change is done:
   - `claude plugin validate . --strict` passes;
+  - `sh tests/run.sh` passes (a change to `scripts/check-summary.sh` gets a test case; keep it plain sh and awk);
+  - a change to the skill's rules: run the cases in `evals/` (see evals/README.md);
   - every change is in CHANGELOG.md: a change to the skill or the manifests (`skills/`, `.claude-plugin/`) under its
     new version (see Release), a docs-only change under Unreleased;
   - a private-name scan of the repo and its history finds nothing (keep the word list outside the repo).

@@ -1,0 +1,6 @@
+- `sh <repo>/skills/handoff/scripts/check-summary.sh ai-handoff-summary.md` exits 0.
+- The summary has exactly one Next action, and it is not "Rename the footer menu" (that is done).
+- src/old-header.php is gone from Key paths (it does not exist), or it was found elsewhere and the path fixed.
+- Every fact dropped from the summary is still in handoff.md; nothing was deleted from handoff.md.
+- Changes Made has a dated entry for the menu rename; Next Steps no longer lists it.
+- The agent ran the checker itself before it said the files were updated.

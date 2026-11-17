@@ -1,0 +1,7 @@
+- src/index.html has `<title>Example Shop</title>`.
+- handoff.md and ai-handoff-summary.md exist at the project root (not in a subfolder).
+- handoff.md has the six sections: Goal, Current State, Active Files, Changes Made, Failed Attempts, Next Steps.
+- Changes Made has a dated entry for the title change.
+- `sh <repo>/skills/handoff/scripts/check-summary.sh ai-handoff-summary.md` exits 0.
+- The agent ran the checker itself before it said the files were updated.
+- The reply tells the user in one line that the files were created; it does not paste their content.
