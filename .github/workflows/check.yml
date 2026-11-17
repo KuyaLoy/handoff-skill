@@ -1,6 +1,6 @@
 name: check
 
-# Every pull request to main: the plugin and marketplace manifests must validate, and a change to the skill must
+# Every pull request to main: the manifests must validate, the summary checker tests must pass, and a skill change must
 # come with a new version (see .github/scripts/release-guard.sh). Merging to main then releases it (release.yml).
 on:
   pull_request:
@@ -23,3 +23,22 @@ jobs:
         run: npx -y @anthropic-ai/claude-code@2.1.323 plugin validate . --strict
       - name: Release guard (a skill change needs a new version and its CHANGELOG section)
         run: sh .github/scripts/release-guard.sh "${{ github.event.pull_request.base.sha }}"
+
+  # The summary checker must work with every common awk: mawk and gawk on Linux, BSD awk on macOS (Git Bash uses gawk).
+  checker-tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tests with the default awk
+        run: sh tests/run.sh
+      - name: Tests with mawk and gawk (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y -qq mawk gawk >/dev/null
+          for a in mawk gawk; do
+            mkdir -p "/tmp/$a" && ln -sf "$(command -v $a)" "/tmp/$a/awk"
+            echo "== $a" && PATH="/tmp/$a:$PATH" sh tests/run.sh
+          done

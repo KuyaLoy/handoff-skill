@@ -16,7 +16,9 @@ What the skill makes Claude do:
   anything risky.
 - **No guessing:** every fact in the summary is tagged `[verified date: how]` or `[unverified: source]`, and only
   checked paths, versions and URLs are listed.
-- **Update both files** after every significant change and before a session ends, checking the summary's limits.
+- **Update both files** after every significant change and before a session ends, then check the summary with a small
+  script that ships with the skill (`scripts/check-summary.sh`, plain sh and awk): limits, tags, paths, template.
+- **Archive a very large handoff.md** (over 100 KB): old entries move word for word into `handoff-archive.md`.
 - **Give you a resume prompt** before a compact, reset or switch to another AI.
 - **Keep the notes private:** blocked on web roots, left out of deploys, and committed to git only if you say so.
   Secrets are never written, only where they live.
@@ -93,6 +95,9 @@ Your projects keep their handoff files; they are plain Markdown.
 .claude-plugin/plugin.json         the plugin
 .claude-plugin/marketplace.json    this repo as a one-plugin marketplace
 skills/handoff/SKILL.md            the skill
+skills/handoff/scripts/            check-summary.sh, the summary checker the skill runs
+tests/                             checker tests (sh tests/run.sh), run on every pull request
+evals/                             behaviour cases for the skill (see evals/README.md)
 CHANGELOG.md                       what changed in each version
 AGENTS.md                          rules for changing the skill and releasing it
 ```

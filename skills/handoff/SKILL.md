@@ -34,7 +34,7 @@ The first time you touch a project folder in a session (a connected folder, a lo
   Apache 2.4: put this block in the root `.htaccess`, outside `# BEGIN WordPress` and any other generated block:
   ```apache
   # BEGIN handoff files (keeps the project notes off the web)
-  <FilesMatch "^(handoff|ai-handoff-summary)\.md$">
+  <FilesMatch "^(handoff|handoff-archive|ai-handoff-summary)\.md$">
       Require all denied
   </FilesMatch>
   # END handoff files
@@ -75,14 +75,25 @@ The first time you touch a project folder in a session (a connected folder, a lo
 After every significant change and before ending every session:
 1. Update `handoff.md`: all six sections true to the current state; new entries under Changes Made and Failed Attempts are dated.
 2. Rewrite `ai-handoff-summary.md` from it with the template below. Refresh the Updated and Last change lines. Keep exactly one Next action.
-3. Check the summary: at most 60 lines, 12 facts and 10 paths; exactly one Next action; no line over 160 characters;
-   every fact tagged; every path exists; the status matches handoff.md. Fix it before you finish.
+3. Check the summary with the checker in this skill's folder, from the project root:
+   `sh <skill folder>/scripts/check-summary.sh ai-handoff-summary.md`. Fix every FAIL line before you finish; look at
+   each WARN. No shell (e.g. a chat without code execution): check by hand: at most 60 lines, 12 facts and 10 paths;
+   exactly one Next action; no line over 160 characters; every fact tagged; every path exists; the template headings.
+   Either way, check that the status matches handoff.md.
 4. Tell the user in one line that both files are updated. Don't paste their content into the chat.
 
 **One writer.** When a coordinator chat owns the root files (for example a Command Center that runs one chat per task),
 the other chats don't edit them: they log in their own task folder (e.g. `tasks/<ID>/notes.md`) and the coordinator
 merges. Same files, same template in every project, also when another skill or workflow creates them. Extra sections
 (e.g. Project rules, Task chats) and numbered headings are fine; the six handoff.md sections stay.
+
+## Very large handoff.md
+
+When handoff.md passes 100 KB (the checker warns), move Changes Made entries older than 60 days, and Failed Attempts
+that no longer apply, word for word and newest first, into `handoff-archive.md` next to it. Leave one line in each of
+those sections: "Older entries: handoff-archive.md (moved YYYY-MM-DD)". The archive gets the same protection as the
+other two files (the .htaccess block above names it: update an older block; the git decision; the deploy ignore list).
+Read it only for old history.
 
 ## Before a compact, reset or switch to another AI
 
@@ -127,7 +138,8 @@ Status: ACTIVE | PAUSED (by user) | BLOCKED | DONE
 - <topic>: handoff.md > <section>
 ```
 
-Limits: 60 lines, 12 facts, 10 paths, every line under 160 characters. Drop anything resolved; history belongs in handoff.md.
+Limits: 60 lines, 12 facts, 10 paths, one Next action, lines of at most 160 characters (the checker tests them all).
+Drop anything resolved; history belongs in handoff.md.
 
 ## Style
 

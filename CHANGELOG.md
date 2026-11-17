@@ -4,6 +4,21 @@ All notable changes to the handoff skill. Format: [Keep a Changelog](https://kee
 Versions: [Semantic Versioning](https://semver.org/) (fix = patch, new rule = minor, changed workflow = major).
 
 ## [Unreleased]
+
+## [1.1.0] - 2026-11-17
+
+### Added
+- `scripts/check-summary.sh`: a checker for ai-handoff-summary.md (plain sh and awk) that ships with the skill.
+  Updating step 3 runs it and fixes every FAIL before saying the files are updated. It checks lines, facts, paths,
+  one Next action, line length, fact tags, that every Key paths entry exists, the template lines and headings, and
+  warns when handoff.md is over 100 KB. Without a shell, the same list is checked by hand.
+- "Very large handoff.md": over 100 KB, old Changes Made entries and Failed Attempts that no longer apply move word
+  for word into handoff-archive.md, with a pointer line; the archive gets the same protection.
+- Checker tests (`tests/run.sh`, run on Linux and macOS for every pull request) and behaviour cases in `evals/`.
+
+### Changed
+- The .htaccess block also covers handoff-archive.md.
+- The limits line names every limit, and line length reads "at most 160 characters" everywhere.
 - Release automation: the `check` workflow validates every pull request and makes a skill change come with a new
   version; the `release` workflow tags each new version and publishes it with `handoff.zip`. README: how to turn on
   automatic updates, and that colleagues using a shared claude.ai skill get updates by themselves.
@@ -31,5 +46,6 @@ First shared version. Changes from the private version of 2026-11-09; every othe
 - The description mentions compaction and resets (190 characters, under the 200-character limit for claude.ai).
 - Personal names replaced by "the user".
 
-[Unreleased]: https://github.com/KuyaLoy/handoff-skill/compare/handoff--v1.0.0...HEAD
+[Unreleased]: https://github.com/KuyaLoy/handoff-skill/compare/handoff--v1.1.0...HEAD
+[1.1.0]: https://github.com/KuyaLoy/handoff-skill/compare/handoff--v1.0.0...handoff--v1.1.0
 [1.0.0]: https://github.com/KuyaLoy/handoff-skill/releases/tag/handoff--v1.0.0
