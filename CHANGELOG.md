@@ -5,6 +5,26 @@ Versions: [Semantic Versioning](https://semver.org/) (fix = patch, new rule = mi
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-18
+
+### Added
+- Daily EOD log (`eod.md`, read only when needed): `eod/YYYY-MM-DD.md`, one line per finished item or stop, written
+  when it happens with how it was verified, append only. "EOD" or "EOD for today" writes the day's summary into the
+  file and replies with it in one code block; the same question gets the same answer; "EOD for <date>" reads that
+  day's file. No file: it says so and offers a rebuild from dated handoff and task notes and git, marked
+  "reconstructed", written only after a yes. Only the chat that owns the root files writes it.
+- After a compact or reset (new paragraph in the compact section): the compact summary is a source, not a fact;
+  read ai-handoff-summary.md (a task chat: its checkpoint.md or notes.md) and re-check the Next action first.
+- README: an optional SessionStart hook (matcher "compact") that reminds the chat of this right after every compact.
+- Evals: eod-today and eod-missing.
+
+### Changed
+- `eod/` gets the same protection as the handoff files: `eod/.htaccess` with `Require all denied` on Apache, left out
+  of deploys, and the same git decision. Updating step 1 adds the EOD line; the One writer rule covers `eod/`.
+- The description also triggers on an EOD request (192 characters).
+- "Before a compact, reset or switch to another AI" is now "Before and after a compact, reset or switch to another
+  AI"; the Style section is one line at the top. Small rewording elsewhere to keep SKILL.md under 150 lines.
+
 ## [1.1.0] - 2026-11-17
 
 ### Added

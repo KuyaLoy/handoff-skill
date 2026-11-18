@@ -9,7 +9,7 @@ Run a case (any AI tool that can run a shell):
    and follow it), and give it the text of `prompt.md`.
 3. Check every line of `graders/checks.md`. A case passes when all of them hold.
 
-Run all four after any change to the skill's rules. The layout follows `claude plugin eval` (prompt.md and graders/),
+Run all six after any change to the skill's rules. The layout follows `claude plugin eval` (prompt.md and graders/),
 which was in early access when these were written, so for now they are run by hand or by an agent.
 
 | Case | What it tests |
@@ -18,3 +18,5 @@ which was in early access when these were written, so for now they are run by ha
 | fix-limits | an update fixes a summary that breaks the limits, without losing facts |
 | archive | handoff.md over 100 KB: old entries move to handoff-archive.md, with pointer lines |
 | compact-prompt | before a compact: files updated, then a resume prompt in one code block |
+| eod-today | "EOD for today" writes the summary from the day's log, replies with it, same answer when asked again |
+| eod-missing | "EOD for <date>", no file: says so, offers a rebuild, writes nothing before a yes; rebuild marked |

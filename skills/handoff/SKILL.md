@@ -1,6 +1,6 @@
 ---
 name: "handoff"
-description: "Use whenever you work in any project folder or codebase (start, end, after big changes, before a compact or reset): create handoff.md and ai-handoff-summary.md if missing, keep both updated."
+description: "Use in any project folder or codebase (start, end, after big changes, a compact or reset, or when asked for an EOD): create handoff.md and ai-handoff-summary.md if missing, keep both updated."
 ---
 
 # Handoff
@@ -13,17 +13,17 @@ Every project keeps two files at its root:
 | `ai-handoff-summary.md` | AI only | A short brief made from handoff.md and fresh checks, so an AI can continue without reading the whole log. Hard cap: 60 lines. |
 
 The summary never says anything that handoff.md or a check doesn't back up. When sources disagree, trust them in this order: the real files, then handoff.md, then the summary, then memory or chat context. Fix the handoff files when you find a mismatch.
+Style in both files: plain English, short lines, no em dashes, one date format per project.
 
 ## Auto-create rule (always, no reminder needed)
 
 The first time you touch a project folder in a session (a connected folder, a local site, a repo, a theme or plugin you are editing), check its root for both files before you finish your first significant step.
 
-- **Both missing:** create both. Don't wait for the user to ask.
-- **Only one exists:** create the missing one from the other.
+- **Both missing:** create both; don't wait for the user to ask. **Only one exists:** create the other from it.
 - **Seed them from what already exists**, not from memory: build logs (e.g. BUILD-LOG.md), README, project notes, CLAUDE.md, git log, backup RESTORE.md files, and what you verified in this session. Point to those logs in handoff.md instead of copying them whole.
 - **If you can't write to the folder** (read-only, no access), say so in one line and keep going; don't block the task.
-- **Pick a safe location:** use the project root, and keep the files off the web and out of deploys (see "Web roots,
-  deploys and git" below). Say in handoff.md where they are if they are not at the root.
+- **Pick a safe location:** the project root, off the web and out of deploys ("Web roots, deploys and git" below).
+  Not at the root: say in handoff.md where they are.
 - **Tell the user in one line** that you created them and where. Don't paste their content into the chat.
 - **One pair per project:** if several unrelated clients or projects share a parent folder, each project gets its own pair. Never mix two clients in one handoff.
 - **Size it to the work:** a task that just started gets a few lines per section. Don't pad, don't copy logs.
@@ -42,9 +42,10 @@ The first time you touch a project folder in a session (a connected folder, a lo
   Then check: the file's URL gives 403 (`curl -I`) and the home page still loads. Other servers: the same rule in
   their config. On a live server, or when that `.htaccess` gets deployed, ask the user first. If you can't block them,
   move the pair one level up into a folder of its own for this project.
+- **`eod/`** (daily EOD log): same care. Apache: `eod/.htaccess` with `Require all denied`, then a 403 check.
 - **Deployed folders** (a theme or plugin folder, a static build, a zip): check the deploy script or ignore list and
-  make sure both files stay out.
-- **Git repo:** ask the user once whether the two files are committed or stay local (local: list them in
+  make sure both files and `eod/` stay out.
+- **Git repo:** ask the user once whether the two files and `eod/` are committed or stay local (local: list them in
   `.git/info/exclude`). Record the answer under the project rules in handoff.md.
 
 ## When to read what (saves credits)
@@ -56,8 +57,7 @@ The first time you touch a project folder in a session (a connected folder, a lo
    - the summary contradicts what you see;
    - you need history: why something was done, what already failed;
    - before anything risky or hard to undo (deploys, deletes, migrations, database changes).
-4. handoff.md exists but no summary: read handoff.md once and write the summary from it.
-5. Neither exists: follow the Auto-create rule above.
+4. handoff.md exists but no summary: read it once and write the summary from it. Neither exists: Auto-create rule.
 
 ## Anti-hallucination rules
 
@@ -74,6 +74,7 @@ The first time you touch a project folder in a session (a connected folder, a lo
 
 After every significant change and before ending every session:
 1. Update `handoff.md`: all six sections true to the current state; new entries under Changes Made and Failed Attempts are dated.
+   When an item finished or work stopped, also add its line to today's EOD log (see "Daily EOD log").
 2. Rewrite `ai-handoff-summary.md` from it with the template below. Refresh the Updated and Last change lines. Keep exactly one Next action.
 3. Check the summary with the checker in this skill's folder, from the project root:
    `sh <skill folder>/scripts/check-summary.sh ai-handoff-summary.md`. Fix every FAIL line before you finish; look at
@@ -82,10 +83,9 @@ After every significant change and before ending every session:
    Either way, check that the status matches handoff.md.
 4. Tell the user in one line that both files are updated. Don't paste their content into the chat.
 
-**One writer.** When a coordinator chat owns the root files (for example a Command Center that runs one chat per task),
-the other chats don't edit them: they log in their own task folder (e.g. `tasks/<ID>/notes.md`) and the coordinator
-merges. Same files, same template in every project, also when another skill or workflow creates them. Extra sections
-(e.g. Project rules, Task chats) and numbered headings are fine; the six handoff.md sections stay.
+**One writer.** When a coordinator chat owns the root files (e.g. a Command Center with one chat per task), other chats
+don't edit them or `eod/`: they log in their task folder (e.g. `tasks/<ID>/notes.md`) and the coordinator merges. Same
+files and template everywhere, also when another skill creates them; extra sections are fine, the six sections stay.
 
 ## Very large handoff.md
 
@@ -95,16 +95,23 @@ those sections: "Older entries: handoff-archive.md (moved YYYY-MM-DD)". The arch
 other two files (the .htaccess block above names it: update an older block; the git decision; the deploy ignore list).
 Read it only for old history.
 
-## Before a compact, reset or switch to another AI
+## Daily EOD log
 
-When the user is about to compact, clear or reset the chat, or move the work to another AI or tool:
-1. Update both files as above.
-2. Give the user a resume prompt in one code block, short enough to paste anywhere and written for any AI tool:
-   ```
-   Continue <project> in <path>. Read ai-handoff-summary.md first; open handoff.md only for history.
-   Next action: <one step>. Rules: <the hard rules, e.g. no live changes before my go>.
-   ```
-   No secrets, and nothing the files don't back up.
+`eod/YYYY-MM-DD.md` gets one line per finished item, written when it happens; "EOD" or "EOD for <date>" is answered
+from that file. Only the root files' owner writes it. Before you write a line or answer, read `eod.md` (skill folder).
+
+## Before and after a compact, reset or switch to another AI
+
+**Before** the user compacts, clears or resets the chat, or moves the work to another AI or tool: update both files,
+then give a short resume prompt in one code block, for any AI tool, with no secrets and nothing the files don't back up:
+```
+Continue <project> in <path>. Read ai-handoff-summary.md first; open handoff.md only for history.
+Next action: <one step>. Rules: <the hard rules, e.g. no live changes before my go>.
+```
+
+**After** a compact or reset (an optional hook reminds you, see README): the compact summary is a source, not a fact.
+Before your next step, read `ai-handoff-summary.md` (a task chat: its `checkpoint.md` or `notes.md`) and re-check its
+Next action against the real files. Where chat memory and the files disagree, the files win.
 
 ## ai-handoff-summary.md template
 
@@ -140,7 +147,3 @@ Status: ACTIVE | PAUSED (by user) | BLOCKED | DONE
 
 Limits: 60 lines, 12 facts, 10 paths, one Next action, lines of at most 160 characters (the checker tests them all).
 Drop anything resolved; history belongs in handoff.md.
-
-## Style
-
-Plain English, short lines, no em dashes. Use one date format per project and keep it.

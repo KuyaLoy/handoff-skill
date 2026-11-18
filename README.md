@@ -19,7 +19,11 @@ What the skill makes Claude do:
 - **Update both files** after every significant change and before a session ends, then check the summary with a small
   script that ships with the skill (`scripts/check-summary.sh`, plain sh and awk): limits, tags, paths, template.
 - **Archive a very large handoff.md** (over 100 KB): old entries move word for word into `handoff-archive.md`.
-- **Give you a resume prompt** before a compact, reset or switch to another AI.
+- **Give you a resume prompt** before a compact, reset or switch to another AI, and **re-read the files after one**
+  (the compact summary is a source, not a fact). An optional hook reminds the chat right after every compact.
+- **Keep a daily EOD log:** `eod/YYYY-MM-DD.md`, one line per finished item, written when it happens. Ask "EOD" or
+  "EOD for today" and you get the day's summary, ready to paste; "EOD for 15 Nov" reads that day's file. No file for a
+  day: it says so and offers a rebuild from dated notes and git, marked "reconstructed".
 - **Keep the notes private:** blocked on web roots, left out of deploys, and committed to git only if you say so.
   Secrets are never written, only where they live.
 
@@ -66,6 +70,31 @@ The skill's description makes Claude load it in project folders. To make it a ru
 - At the start of every session in a project folder, load the handoff skill and follow it. Read ai-handoff-summary.md first.
 - After every significant change and before ending a session, update both files without being asked.
 ```
+
+## Re-read the files after every compact (optional hook, recommended)
+
+Claude Code and the desktop app's Code tab can run a hook right after a compaction (automatic or `/compact`); its text
+goes into the chat's context. Add this to `~/.claude/settings.json` (merge it into an existing `"hooks"` block):
+
+```json
+"hooks": {
+  "SessionStart": [
+    {
+      "matcher": "compact",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo 'Context was compacted. Before your next step, read ai-handoff-summary.md at the project root (a task chat: its checkpoint.md or notes.md) and re-check its Next action against the real files. The files win over the compact summary.'",
+          "timeout": 10
+        }
+      ]
+    }
+  ]
+}
+```
+
+The single quotes make it print the same line in Git Bash and in PowerShell (the shells hooks run in on Windows).
+claude.ai chats have no hooks: there the skill's rule for after a compact does the same job.
 
 ## Update
 
