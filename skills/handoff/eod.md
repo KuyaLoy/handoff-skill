@@ -18,8 +18,9 @@ Timezone: UTC+4
 - 11:05 ABC1-T9 Form fix: blocked, client SMTP login needed [verified: SMTP auth error in the mail log]
 
 ## EOD summary (written 17:55)
-- ABC1-T8 Metadata: DONE. 12 pages live and checked. In review.
-- ABC1-T9 Form fix: BLOCKED on the client's SMTP login. Asked in Zoho.
+EOD 2026-11-18: example.com
+- [ABC1-T8](https://pm.example.net/8) Metadata, [example.com](https://example.com): IN REVIEW. 12 pages live.
+- [ABC1-T9](https://pm.example.net/9) Form fix, [example.com](https://example.com): BLOCKED. Needs the SMTP login.
 Next: ABC1-T9 when the login arrives.
 ```
 
@@ -41,12 +42,11 @@ Next: ABC1-T9 when the login arrives.
 
 ## Answering "EOD"
 
-- **"EOD" or "EOD for today":** read today's file only. Write the `## EOD summary (written HH:MM)` block at its end:
-  one line per task or item in the log (`<task> <title>: <STATUS>. <what was done>.`, STATUS = DONE, IN REVIEW,
-  IN PROGRESS, WAITING, BLOCKED or PAUSED, from the item's latest log line), then one `Next:` line. Reply with that
-  block, exactly as in the file, in one code block, ready to paste. Nothing in the summary that is not in the log.
+- **"EOD" or "EOD for today":** read today's file only. Write the `## EOD summary (written HH:MM)` block at its end.
+  Reply with that block, exactly as in the file, in one code block, ready to paste. Nothing in it that isn't in the log.
 - **Same question, same answer:** if the file already has a summary and no Log line is newer than it, reply with that
-  summary word for word. If new lines came after it, replace the block (one summary per file) with a new time.
+  summary word for word. If new lines came after it, or it is not in the shape below, replace the block (one summary
+  per file) with a new time.
 - **"EOD for <date>"** (e.g. "EOD for 15 Nov"): read that day's file only and answer the same way. If it has no
   summary yet, write one into it first.
 - **No file for that day:** say so in one line. Offer a rebuild from dated entries in handoff.md, task notes and the
@@ -56,3 +56,25 @@ Next: ABC1-T9 when the login arrives.
 - **A chat that doesn't own the root files** answers only by reading the file; if it is missing, it says so and names
   the owner chat.
 - **Other ranges** ("EOD for this week"): read each day's file and join their summaries, one heading per day.
+
+## The EOD summary: short but proper
+
+The lead may paste the EOD of every project into one chat that writes the full daily report, so each line must stand
+alone and every project's summary has the same shape, also when another skill asks for it. Exactly this, nothing else
+(no sections, sub-bullets or notes):
+- First line: `EOD <YYYY-MM-DD>: <project>`.
+- One line per task or item in the log (a task with many Log lines still gets one):
+  `- [<task>](<task page>) <title>, [<site>](<site URL>): <STATUS>. <one short sentence: today's result>.`
+  Keep the visible text to about 120 characters (link URLs don't count). Leave out the steps, checks and tools.
+- Last line: `Next: <the next step>` (one line for the project).
+- **Links:** the site's public address and the task's page, from handoff.md (the board, Goal, project rules) or the
+  task's brief or notes. Not found: write the name without a link; never guess one. An item with no site: the
+  project name instead. Never a magic link, login link, staging access link or anything with a token.
+- **STATUS**, from the item's latest state in the log, not only its last word:
+  - **DONE:** nothing is left for us or anyone else.
+  - **IN REVIEW:** our work is finished and waits on a reviewer or the client (submitted, Request Review, staging
+    posted for the client). Never WAITING for these.
+  - **WAITING:** waits on the lead, or on a missing input before the work can go on.
+  - **BLOCKED:** cannot go on (an error, access we don't have). **IN PROGRESS:** still being worked on.
+    **PAUSED:** the user paused it.
+- Plain text and Markdown links only, so it pastes cleanly. No bold, tables, emoji or code inside it.

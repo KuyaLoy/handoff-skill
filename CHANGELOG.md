@@ -5,6 +5,17 @@ Versions: [Semantic Versioning](https://semver.org/) (fix = patch, new rule = mi
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-11-18
+
+### Changed
+- EOD summary short but proper (eod.md): a title line `EOD <date>: <project>`, then exactly one line per task,
+  `- [<task>](<task page>) <title>, [<site>](<site URL>): <STATUS>. <one short sentence>.` (visible text about 120
+  characters), then one `Next:` line. No sections or sub-bullets, so every project's EOD pastes cleanly into one daily
+  report. Links come from handoff.md or the task's notes, never guessed; never a magic link or token.
+- STATUS rules: IN REVIEW when finished work waits on a reviewer or the client (never WAITING); WAITING only for the
+  lead or a missing input; DONE when nothing is left. A summary in an older shape is rewritten on the next "EOD".
+- Evals: eod-summary-shape (new); eod-today checks the new shape.
+
 ## [1.3.0] - 2026-11-18
 
 ### Added
