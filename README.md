@@ -1,7 +1,7 @@
 # handoff
 
-A skill for Claude that keeps two files at the root of every project, so work survives a new chat, a compaction, a
-context reset or a switch to another AI tool:
+A skill for Claude and other AI coding tools (Agent Skills format) that keeps two files at the root of every project,
+so work survives a new chat, a compaction, a context reset or a switch to another AI tool:
 
 | File | For | What it holds |
 |---|---|---|
@@ -16,9 +16,14 @@ What the skill makes Claude do:
   anything risky.
 - **No guessing:** every fact in the summary is tagged `[verified date: how]` or `[unverified: source]`, and only
   checked paths, versions and URLs are listed.
-- **Update both files** after every significant change and before a session ends, then check the summary with a small
-  script that ships with the skill (`scripts/check-summary.sh`, plain sh and awk): limits, tags, paths, template.
-- **Archive a very large handoff.md** (over 100 KB): old entries move word for word into `handoff-archive.md`.
+- **Update both files without extra cost:** the full summary rewrite only at milestones (plan approved, done, deployed,
+  blocked) and at session end. Other stops run one script, `scripts/record-stop.sh`: it refreshes the summary's
+  Updated, Last change and Next action lines, adds the EOD line and a coordinator's board row, runs the checker
+  (`scripts/check-summary.sh`: limits, tags, paths, template) and prints one line. Plain sh and awk; chats without a
+  shell make the same edits by hand.
+- **Archive a very large handoff.md** (over 100 KB): entries older than 14 days and finished board rows move word for
+  word into `handoff-archive.md`.
+- **Point every AI tool to the notes:** a 4-line `AGENTS.md` next to the handoff files (most AI tools read it).
 - **Give you a resume prompt** before a compact, reset or switch to another AI, and **re-read the files after one**
   (the compact summary is a source, not a fact). An optional hook reminds the chat right after every compact.
 - **Keep a daily EOD log:** `eod/YYYY-MM-DD.md`, one line per finished item, written when it happens. Ask "EOD" or
@@ -59,6 +64,23 @@ Then turn on automatic updates (once): `/plugin` > Marketplaces > handoff > Enab
 ```
 
 **By hand:** copy `skills/handoff/` into `~/.claude/skills/` (no automatic updates).
+
+**Other AI tools** (the skill is plain Agent Skills: `SKILL.md` with name, description and license, plus files):
+clone this repo once, then link (don't copy) `skills/handoff` into each tool's skills folder, so one `git pull`
+updates them all. Paths as documented by each tool in November 2026:
+
+| Tool | Skills folder (personal) | Reads AGENTS.md |
+|---|---|---|
+| OpenAI Codex | `~/.agents/skills` | yes |
+| Google Antigravity | `~/.gemini/config/skills` | yes (or GEMINI.md) |
+| Cursor | `~/.cursor/skills` or `~/.agents/skills` (also reads `~/.claude/skills`) | yes |
+| OpenCode (any model, e.g. Grok or DeepSeek) | `~/.config/opencode/skills` (also `~/.agents`, `~/.claude`) | yes |
+| Devin Desktop | `~/.config/devin/skills` or `~/.agents/skills` | yes |
+| Aider, Continue, others without skills | none: one line in their rules, "Read <clone>/skills/handoff/SKILL.md" | varies |
+
+Windows: `New-Item -ItemType Junction -Path <folder>\handoff -Target <clone>\skills\handoff`. macOS and Linux:
+`ln -s <clone>/skills/handoff <folder>/handoff`. The compact hook below is Claude-only; elsewhere the skill's rule for
+after a compact does the same job.
 
 ## Make it load every session (recommended)
 

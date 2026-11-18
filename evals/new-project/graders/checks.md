@@ -1,5 +1,6 @@
 - src/index.html has `<title>Example Shop</title>`.
 - handoff.md and ai-handoff-summary.md exist at the project root (not in a subfolder).
+- AGENTS.md exists next to them with the 4 pointer lines from setup.md.
 - handoff.md has the six sections: Goal, Current State, Active Files, Changes Made, Failed Attempts, Next Steps.
 - Changes Made has a dated entry for the title change.
 - `sh <repo>/skills/handoff/scripts/check-summary.sh ai-handoff-summary.md` exits 0.

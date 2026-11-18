@@ -6,7 +6,7 @@ answers "EOD" without reading old chats, and the lines are written when things h
 ## The file
 
 `eod/YYYY-MM-DD.md` at the project root, next to handoff.md, one file per day (the user's local date). It gets the same
-protection as the handoff files (SKILL.md, "Web roots, deploys and git").
+protection as the handoff files (`setup.md`).
 
 ```markdown
 # EOD 2026-11-18: example.com

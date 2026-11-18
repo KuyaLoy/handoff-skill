@@ -5,6 +5,28 @@ Versions: [Semantic Versioning](https://semver.org/) (fix = patch, new rule = mi
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-18
+
+### Added
+- `scripts/record-stop.sh`: one call per stop. It appends the EOD line (`--eod`, creates the day's file with its
+  header), sets the summary's Updated, Last change and Next action (and the Now line, Waiting on, Status when given),
+  changes a coordinator's board row in handoff.md > Task chats (`--task` with `--set "Column=value"` or `--row`), runs the
+  checker and prints one line. All or nothing: on a FAIL nothing is written. Keeps each file's line endings. Tests.
+- `setup.md` (read only when the files are created or found unprotected): the web-root, deploy and git rules, moved
+  out of SKILL.md, and the new AGENTS.md pointer: 4 lines next to the handoff files, so any AI tool starts from the
+  summary. Web-blocked like the others (the `.htaccess` block names AGENTS), same deploy and git rules; a tracked
+  AGENTS.md in a repo whose handoff files stay local is left alone.
+- `license: "MIT"` in the SKILL.md frontmatter (Agent Skills format: name, description, license only).
+- README: install for other AI tools (Codex, Antigravity, Cursor, OpenCode, Devin Desktop, tools without skills).
+- Evals: record-stop and agents-pointer; new-project also checks the pointer; archive follows the 14-day rule.
+
+### Changed
+- Updating: the full summary rewrite only at milestones (plan approved, done, deployed, blocked) and before a session
+  ends. Other stops refresh only the Updated, Last change and Next action lines (one record-stop call).
+- Very large handoff.md: past 100 KB, entries older than 14 days (was 60) and the board rows of finished tasks (DONE,
+  ARCHIVED) move to handoff-archive.md, the rows into a `## Task chats (archived)` table; search both for a task ID.
+- SKILL.md 148 lines; small rewording to keep it under 150. eod.md points to setup.md for protection.
+
 ## [1.2.0] - 2026-11-18
 
 ### Added

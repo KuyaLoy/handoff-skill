@@ -9,14 +9,16 @@ Run a case (any AI tool that can run a shell):
    and follow it), and give it the text of `prompt.md`.
 3. Check every line of `graders/checks.md`. A case passes when all of them hold.
 
-Run all six after any change to the skill's rules. The layout follows `claude plugin eval` (prompt.md and graders/),
+Run all eight after any change to the skill's rules. The layout follows `claude plugin eval` (prompt.md and graders/),
 which was in early access when these were written, so for now they are run by hand or by an agent.
 
 | Case | What it tests |
 |---|---|
-| new-project | creates both files in a project that has none; the summary passes the checker |
+| new-project | creates both files and the AGENTS.md pointer in a project that has none; the summary passes the checker |
 | fix-limits | an update fixes a summary that breaks the limits, without losing facts |
 | archive | handoff.md over 100 KB: old entries move to handoff-archive.md, with pointer lines |
 | compact-prompt | before a compact: files updated, then a resume prompt in one code block |
 | eod-today | "EOD for today" writes the summary from the day's log, replies with it, same answer when asked again |
 | eod-missing | "EOD for <date>", no file: says so, offers a rebuild, writes nothing before a yes; rebuild marked |
+| record-stop | a coordinator records a stop with one record-stop.sh call: summary lines, EOD line, board row only |
+| agents-pointer | an older project: the .htaccess block gains AGENTS; a tracked AGENTS.md is left alone when the files are local |
