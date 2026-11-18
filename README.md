@@ -27,9 +27,9 @@ What the skill makes Claude do:
 - **Give you a resume prompt** before a compact, reset or switch to another AI, and **re-read the files after one**
   (the compact summary is a source, not a fact). An optional hook reminds the chat right after every compact.
 - **Keep a daily EOD log:** `eod/YYYY-MM-DD.md`, one line per finished item, written when it happens. Ask "EOD" or
-  "EOD for today" and you get the day's summary, one short line per task with its site and task links and the right
-  status, ready to paste; "EOD for 15 Nov" reads that day's file. No file for a day: it says so and offers a rebuild
-  from dated notes and git, marked "reconstructed".
+  "EOD for today" and you get the day's summary, ready to paste: one block per task (done today, the links, the
+  staging access, what remains). "EOD for 15 Nov" reads that day's file. No file for a day: it says so and offers a
+  rebuild from dated notes and git, marked "reconstructed".
 - **Keep the notes private:** blocked on web roots, left out of deploys, and committed to git only if you say so.
   Secrets are never written, only where they live.
 

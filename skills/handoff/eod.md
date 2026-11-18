@@ -18,10 +18,30 @@ Timezone: UTC+4
 - 11:05 ABC1-T9 Form fix: blocked, client SMTP login needed [verified: SMTP auth error in the mail log]
 
 ## EOD summary (written 17:55)
-EOD 2026-11-18: example.com
-- [ABC1-T8](https://pm.example.net/8) Metadata, [example.com](https://example.com): IN REVIEW. 12 pages live.
-- [ABC1-T9](https://pm.example.net/9) Form fix, [example.com](https://example.com): BLOCKED. Needs the SMTP login.
-Next: ABC1-T9 when the login arrives.
+EOD: 18 Nov 2026 | ABC1-T8 Metadata: in review
+Done today
+
+* New page titles and descriptions written for 12 pages and put live
+* All 12 pages checked on the live site
+
+Links
+
+* Live site: https://example.com
+* Task: https://pm.example.net/8
+
+EOD: 18 Nov 2026 | ABC1-T9 Form fix: blocked, needs the client's email login
+Done today
+
+* Found why the contact form fails: the client's email (SMTP) login is needed
+
+Links
+
+* Live site: https://example.com
+* Task: https://pm.example.net/9
+
+Remaining
+
+* Fix and test the form once the client sends the email login
 ```
 
 ## Writing the log
@@ -43,7 +63,7 @@ Next: ABC1-T9 when the login arrives.
 ## Answering "EOD"
 
 - **"EOD" or "EOD for today":** read today's file only. Write the `## EOD summary (written HH:MM)` block at its end.
-  Reply with that block, exactly as in the file, in one code block, ready to paste. Nothing in it that isn't in the log.
+  Reply with that block, exactly as in the file, in one code block, ready to paste.
 - **Same question, same answer:** if the file already has a summary and no Log line is newer than it, reply with that
   summary word for word. If new lines came after it, or it is not in the shape below, replace the block (one summary
   per file) with a new time.
@@ -57,24 +77,44 @@ Next: ABC1-T9 when the login arrives.
   the owner chat.
 - **Other ranges** ("EOD for this week"): read each day's file and join their summaries, one heading per day.
 
-## The EOD summary: short but proper
+## The EOD summary
 
-The lead may paste the EOD of every project into one chat that writes the full daily report, so each line must stand
-alone and every project's summary has the same shape, also when another skill asks for it. Exactly this, nothing else
-(no sections, sub-bullets or notes):
-- First line: `EOD <YYYY-MM-DD>: <project>`.
-- One line per task or item in the log (a task with many Log lines still gets one):
-  `- [<task>](<task page>) <title>, [<site>](<site URL>): <STATUS>. <one short sentence: today's result>.`
-  Keep the visible text to about 120 characters (link URLs don't count). Leave out the steps, checks and tools.
-- Last line: `Next: <the next step>` (one line for the project).
-- **Links:** the site's public address and the task's page, from handoff.md (the board, Goal, project rules) or the
-  task's brief or notes. Not found: write the name without a link; never guess one. An item with no site: the
-  project name instead. Never a magic link, login link, staging access link or anything with a token.
-- **STATUS**, from the item's latest state in the log, not only its last word:
-  - **DONE:** nothing is left for us or anyone else.
-  - **IN REVIEW:** our work is finished and waits on a reviewer or the client (submitted, Request Review, staging
-    posted for the client). Never WAITING for these.
-  - **WAITING:** waits on the lead, or on a missing input before the work can go on.
-  - **BLOCKED:** cannot go on (an error, access we don't have). **IN PROGRESS:** still being worked on.
-    **PAUSED:** the user paused it.
-- Plain text and Markdown links only, so it pastes cleanly. No bold, tables, emoji or code inside it.
+The lead pastes the EOD of every project into one chat that writes the full daily report, so every project uses this
+shape, also when another skill asks for it. One block per task worked on that day, a blank line between blocks:
+```
+EOD: <d Mon YYYY> | <TASK-ID> <task title>: <state in plain words>
+Done today
+
+* <what was done today, in words the client can read>
+
+Links
+
+* Live site: <URL>
+* Task: <task page URL>
+
+Staging
+
+* Access link (open first): <staging access link>
+* Site: <staging site URL>
+
+Remaining
+
+* <work still left, or what we wait for from the client>
+```
+- **State**, from the task's latest Log line, in plain words: "done" (nothing left), "in review" (our work is
+  finished and waits on a reviewer or the client; add the stage when the log names it, e.g. "in review (Development
+  Review)"), "waiting on <who>", "blocked, <why>", "in progress" (a share such as "around 90% done" only when the log
+  or notes say it), "paused". Finished work that waits on a review is never "waiting".
+- **Done today:** from that day's Log lines only, one bullet per result. Plain words, no methods, tools, file names,
+  times or verification tags. Nothing that isn't in the log.
+- **Links and Staging:** only links found in the files (the handoff.md board, Goal or rules; the task's brief, notes
+  or report) or in the posted task comment; never guessed. Leave out a line, or a whole section, with nothing to show.
+  Staging: the access link first, then the site.
+- **The staging access link** (a magic link) is the one token allowed, because the lead needs it: only one already
+  shared with the client in the task comment, and only in this summary (never in Log lines, handoff.md or
+  ai-handoff-summary.md). If `eod/` is committed to git, write "Access link: in the task comment" instead. Never
+  passwords, API keys, admin login links or any other token.
+- **Remaining:** only when work is really left, or the client owes us something other than the review. A task that
+  only waits on its review has no Remaining.
+- No Tomorrow section and no Next line. Plain text, `* ` bullets and bare URLs, so it pastes cleanly: no bold, tables,
+  emoji or Markdown links.

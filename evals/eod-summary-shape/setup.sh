@@ -1,5 +1,5 @@
 #!/bin/sh
-# A coordinator project whose EOD log has three tasks and an old-style summary (sections, bullets, a long line).
+# A coordinator project whose EOD log has three tasks and a summary in an older shape (one-liners, Tomorrow).
 d=$(date +%Y-%m-%d)
 mkdir -p eod tasks/ABC2-T4
 {
@@ -20,7 +20,11 @@ mkdir -p eod tasks/ABC2-T4
   printf '## Key paths\n- handoff.md: full log\n\n## Rules for this project\n- No live changes before my go\n\n'
   printf '## Open questions\n- None\n\n## Where to look in handoff.md\n- Tasks: handoff.md > Task chats\n'
 } > ai-handoff-summary.md
-printf '# Notes ABC2-T4\n- Staging access link (one-time): https://staging.example.net/?magic=7f3a9c1e5b2d\n' > tasks/ABC2-T4/notes.md
+{
+  printf '# Notes ABC2-T4\n- Zoho comment posted for the client with the staging access:\n'
+  printf '  access link https://access.staging.example.net/access?t=7f3a9c1e5b2d, site https://shop.staging.example.net/\n'
+  printf -- '- Payment test API key (keep private): sk_test_51Hx9PrivateKey\n'
+} > tasks/ABC2-T4/notes.md
 {
   printf '# EOD %s: example-shop\nTimezone: UTC+4\n\n## Log\n' "$d"
   printf -- '- 09:10 ABC2-T4 Shop edits: plan ready, M [verified: plan.md written]\n'
@@ -29,10 +33,10 @@ printf '# Notes ABC2-T4\n- Staging access link (one-time): https://staging.examp
   printf -- '- 14:20 ABC2-T4 Shop edits: QA found 3 small issues, all fixed on staging [verified: QA re-check]\n'
   printf -- '- 15:00 ABC2-T6 Banner copy: waiting on the lead to choose banner text A or B [verified: question in chat]\n'
   printf -- '- 16:40 ABC2-T4 Shop edits: staging link posted in Zoho for client review [verified: comment read back]\n'
-  printf '\n## EOD summary (written 17:00)\nEOD: today | three tasks\n'
-  printf 'Done today\n* Backup, local copy, 5 edits, QA 3 issues fixed, staging posted\n* Footer text live\n'
-  printf 'Staging\n* Access link: https://staging.example.net/?magic=7f3a9c1e5b2d\n'
-  printf -- '- ABC2-T4 Shop edits: WAITING. Backup taken, local copy built, all 5 items done; QA found 3 issues, all '
-  printf 'fixed; staging link posted in Zoho for client review.\nTomorrow\n* Go live after approval\n'
+  printf '\n## EOD summary (written 17:00)\nEOD %s: example-shop\n' "$d"
+  printf -- '- [ABC2-T4](https://pm.example.net/task/4) Shop edits: WAITING. On staging.\n'
+  printf -- '- [ABC2-T5](https://pm.example.net/task/5) Footer text: DONE. Live.\n'
+  printf -- '- ABC2-T6 Banner copy: WAITING. Text A or B.\nNext: ABC2-T4 live after approval.\n'
+  printf 'Tomorrow\n* Go live after approval\n'
 } > "eod/$d.md"
 sed -n '/^## Log/,/^## EOD summary/p' "eod/$d.md" | sed '$d' > .eod-log-before

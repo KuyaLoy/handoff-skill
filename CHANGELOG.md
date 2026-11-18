@@ -5,6 +5,17 @@ Versions: [Semantic Versioning](https://semver.org/) (fix = patch, new rule = mi
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-11-18
+
+### Changed
+- EOD summary in the lead's own shape (eod.md), replacing 1.3.1's one-liners: one block per task worked on that day,
+  `EOD: <d Mon YYYY> | <TASK-ID> <title>: <state in plain words>`, then `Done today` bullets in client-readable words,
+  `Links` (live site, task page), `Staging` (the access link first, then the staging site) and `Remaining` only when
+  work is left or the client owes something other than the review. No Tomorrow section, no Next line.
+- The staging access (magic) link is the one token allowed: only one already shared with the client, only in the EOD
+  summary, not when `eod/` is committed to git. SKILL.md's secrets rule names this exception.
+- Evals: eod-in-review (new); eod-summary-shape and eod-today check the new shape.
+
 ## [1.3.1] - 2026-11-18
 
 ### Changed

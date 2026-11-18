@@ -55,6 +55,7 @@ you are editing), check its root for both files before you finish your first sig
 - Keep sources you will need later (links, versions, file hashes) in handoff.md. A reset loses what lived in the chat.
 - Never write secrets (passwords, licence keys, tokens, API keys) in any of these files. Write where a secret lives
   (e.g. "in wp-config.php", "in the password manager"), never its value. Check your new lines before saving.
+  One exception: a staging access link already shared with the client, in the EOD summary only (`eod.md`).
 
 ## Updating (automatic, no reminder needed)
 
