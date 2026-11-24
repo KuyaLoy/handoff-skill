@@ -7,7 +7,7 @@
 set -u
 f="${1:-ai-handoff-summary.md}"
 if [ ! -f "$f" ]; then
-  echo "FAIL: $f not found"
+  printf '%s\n' "FAIL: $f not found"
   exit 2
 fi
 dir=$(dirname "$f")
@@ -134,9 +134,9 @@ while IFS="$tab" read -r kind a b c d e; do
           case "$b" in [A-Za-z]:[\\/]*) other=1 ;; esac
         fi
         if [ "$other" = 1 ]; then
-          echo "WARN line $a: path from another machine, not checked: $b"
+          printf '%s\n' "WARN line $a: path from another machine, not checked: $b"
         else
-          echo "FAIL line $a: path not found: $b"
+          printf '%s\n' "FAIL line $a: path not found: $b"
           pathfails=$((pathfails + 1))
         fi
       fi
@@ -160,8 +160,8 @@ fi
 
 total=$((fails + pathfails))
 if [ "$total" -gt 0 ]; then
-  echo "FAILED: $total problem(s). $summary"
+  printf '%s\n' "FAILED: $total problem(s). $summary"
   exit 1
 fi
-echo "OK: $summary"
+printf '%s\n' "OK: $summary"
 exit 0

@@ -18,6 +18,11 @@ Versions: [Semantic Versioning](https://semver.org/) (fix = patch, new rule = mi
 - Tests: every checker and record-stop case also runs the Python twin and fails unless its output, exit code and
   files are identical; UTF-8 cases; session-hook cases. CI adds a Windows job (Git Bash + native Windows Python).
 
+### Fixed
+- `check-summary.sh` and `record-stop.sh` print their result lines with `printf '%s\n'` instead of `echo`: on Linux,
+  where `sh` is dash, `echo` turned a backslash in a path (e.g. `D:\sites\example`) into an escape code. Found by the
+  new Python twin comparison.
+
 ### Changed
 - SKILL.md: one line at the top says what to open on demand (`setup.md`, `eod.md`, `scripts/` and the `.py` twins);
   the description adds the trigger words "handoff" and "resume" (199 characters). Rules unchanged.

@@ -17,7 +17,7 @@ last=""; next=""; waiting=""; status=""; by=""; eod=""; task=""; row=""; sets=""
 hasw=0; hass=0; hasn=0; now=""
 nl='
 '
-die() { echo "FAIL: nothing written: $1"; exit "${2:-1}"; }
+die() { printf '%s\n' "FAIL: nothing written: $1"; exit "${2:-1}"; }
 while [ $# -gt 0 ]; do
   [ $# -ge 2 ] || die "$1 needs a value"
   case "$1" in
@@ -223,5 +223,5 @@ okline=$(printf '%s\n' "$chk" | sed -n 's/^OK: //p')
 extra=""
 [ "$warns" = 0 ] || extra=" ($warns WARN)"
 [ -z "$big" ] || extra="$extra; $big: archive (skill: Very large handoff.md)"
-echo "OK: stop recorded at $hm: $what; checker OK, $okline$extra"
+printf '%s\n' "OK: stop recorded at $hm: $what; checker OK, $okline$extra"
 exit 0
