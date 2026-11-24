@@ -1,6 +1,6 @@
 ---
 name: "handoff"
-description: "Use in any project folder or codebase (start, end, after big changes, a compact or reset, or when asked for an EOD): create handoff.md and ai-handoff-summary.md if missing, keep both updated."
+description: "Use in any project folder or codebase (start, end, after big changes, a compact or reset, a handoff, resume or EOD request): create handoff.md and ai-handoff-summary.md if missing, keep both updated."
 license: "MIT"
 ---
 
@@ -13,7 +13,8 @@ Every project keeps two files at its root:
 | `handoff.md` | The user, any dev, any AI starting cold | The full record, same format as always: Goal, Current State, Active Files, Changes Made, Failed Attempts, Next Steps. It keeps growing; nothing important is dropped. |
 | `ai-handoff-summary.md` | AI only | A short brief made from handoff.md and fresh checks, so an AI can continue without reading the whole log. Hard cap: 60 lines. |
 
-Next to them, a 4-line `AGENTS.md` points any AI tool to them (`setup.md`).
+Next to them, a 4-line `AGENTS.md` points any AI tool to them. Open on demand, in the skill folder: `setup.md` and
+`eod.md` (when: below), and `scripts/` (each `.sh` has a `.py` twin, same options and output, for Python without sh).
 The summary never says anything that handoff.md or a check doesn't back up. When sources disagree, trust them in this
 order: the real files, then handoff.md, then the summary, then memory or chat context. Fix the files on a mismatch.
 Style in both files: plain English, short lines, no em dashes, one date format per project.

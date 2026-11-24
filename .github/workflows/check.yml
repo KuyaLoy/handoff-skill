@@ -24,12 +24,17 @@ jobs:
       - name: Release guard (a skill change needs a new version and its CHANGELOG section)
         run: sh .github/scripts/release-guard.sh "${{ github.event.pull_request.base.sha }}"
 
-  # The summary checker must work with every common awk: mawk and gawk on Linux, BSD awk on macOS (Git Bash uses gawk).
+  # The scripts must work with every common awk: mawk and gawk on Linux, BSD awk on macOS, gawk in Windows Git Bash.
+  # Every case also runs the Python twins (.py) and compares them with the sh scripts; on Windows that is a native
+  # Windows Python, as in tools without Git Bash.
   checker-tests:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - name: Tests with the default awk

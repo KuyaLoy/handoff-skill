@@ -5,6 +5,23 @@ Versions: [Semantic Versioning](https://semver.org/) (fix = patch, new rule = mi
 
 ## [Unreleased]
 
+## [1.3.3] - 2026-11-24
+
+### Added
+- Python twins of the scripts, for tools and computers without sh (e.g. Codex or Antigravity on Windows without Git
+  Bash): `scripts/check-summary.py` and `scripts/record-stop.py` (Python 3.8+, standard library). Same options, same
+  output, same exit codes, same files written (CRLF and any encoding kept). On Windows, Git Bash style `/c/...` paths
+  in a summary resolve as in Git Bash.
+- `scripts/session-hook.py --tool claude|codex|antigravity`: the after-compact reminder in each tool's SessionStart
+  format. README: hook setup for Codex (`~/.codex/hooks.json`, trusted in `/hooks`) and Antigravity
+  (`~/.gemini/config/hooks.json`), and how to force the skill in Claude, Codex, Antigravity and T3 Code.
+- Tests: every checker and record-stop case also runs the Python twin and fails unless its output, exit code and
+  files are identical; UTF-8 cases; session-hook cases. CI adds a Windows job (Git Bash + native Windows Python).
+
+### Changed
+- SKILL.md: one line at the top says what to open on demand (`setup.md`, `eod.md`, `scripts/` and the `.py` twins);
+  the description adds the trigger words "handoff" and "resume" (199 characters). Rules unchanged.
+
 ## [1.3.2] - 2026-11-18
 
 ### Changed

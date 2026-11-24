@@ -9,16 +9,19 @@ Read `skills/handoff/SKILL.md` and follow it.
 
 ## Changing the skill
 
-- Keep it short: `SKILL.md` under 150 lines. New or changed lines under 120 characters. Plain English, no em dashes.
+- Keep it short: `SKILL.md` at most 150 lines. New or changed lines under 120 characters. Plain English, no em dashes.
 - The `description` must stay at most 200 characters (the claude.ai upload limit). The `name` stays `handoff`.
 - SKILL.md frontmatter: only `name`, `description` and `license` (the Agent Skills format other AI tools read; claude.ai
   rejects tool-specific fields). Steps in plain words, not one tool's tool names.
-- Keep the file names, `record-stop.sh`'s options, the template's field names (Updated, By, Last change, Status) and
+- Keep the file names, `record-stop.sh`'s options (and its `.py` twin's), the template's field names (Updated, By, Last change, Status) and
   section headings stable: existing projects and other skills (for example zoho-command-center) rely on them.
 - No real names of people, clients, companies or sites. Examples use generic names and example.com.
 - Before a change is done:
   - `claude plugin validate . --strict` passes;
-  - `sh tests/run.sh` passes (a change to a script in `scripts/` gets a test case; keep them plain sh and awk);
+  - `sh tests/run.sh` passes (a change to a script in `scripts/` gets a test case). The `.sh` scripts stay plain sh
+    and awk; each has a `.py` twin (Python 3.8+, standard library) that must print the same output, exit with the
+    same code and write the same files: change both together. run.sh runs every case on both and compares them,
+    so it needs Python;
   - a change to the skill's rules: run the cases in `evals/` (see evals/README.md);
   - every change is in CHANGELOG.md: a change to the skill or the manifests (`skills/`, `.claude-plugin/`) under its
     new version (see Release), a docs-only change under Unreleased;

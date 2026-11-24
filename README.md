@@ -19,8 +19,9 @@ What the skill makes Claude do:
 - **Update both files without extra cost:** the full summary rewrite only at milestones (plan approved, done, deployed,
   blocked) and at session end. Other stops run one script, `scripts/record-stop.sh`: it refreshes the summary's
   Updated, Last change and Next action lines, adds the EOD line and a coordinator's board row, runs the checker
-  (`scripts/check-summary.sh`: limits, tags, paths, template) and prints one line. Plain sh and awk; chats without a
-  shell make the same edits by hand.
+  (`scripts/check-summary.sh`: limits, tags, paths, template) and prints one line. Plain sh and awk, each with a
+  Python twin (`record-stop.py`, `check-summary.py`: same options, output and exit codes) for computers without sh,
+  e.g. Codex or Antigravity on Windows without Git Bash. Chats without a shell make the same edits by hand.
 - **Archive a very large handoff.md** (over 100 KB): entries older than 14 days and finished board rows move word for
   word into `handoff-archive.md`.
 - **Point every AI tool to the notes:** a 4-line `AGENTS.md` next to the handoff files (most AI tools read it).
@@ -80,8 +81,10 @@ updates them all. Paths as documented by each tool in November 2026:
 | Aider, Continue, others without skills | none: one line in their rules, "Read <clone>/skills/handoff/SKILL.md" | varies |
 
 Windows: `New-Item -ItemType Junction -Path <folder>\handoff -Target <clone>\skills\handoff`. macOS and Linux:
-`ln -s <clone>/skills/handoff <folder>/handoff`. The compact hook below is Claude-only; elsewhere the skill's rule for
-after a compact does the same job.
+`ln -s <clone>/skills/handoff <folder>/handoff`. No sh on the computer (Windows without Git Bash): the skill runs the
+scripts' Python twins, `python <skill folder>/scripts/record-stop.py ...` (Python 3.8+, same options and output).
+Force the skill when a tool doesn't pick it: Claude `/handoff`, Codex `$handoff`, Antigravity `/handoff` in the app
+(in T3 Code say "use the handoff skill"). The hook below has a setup for Claude, Codex and Antigravity.
 
 ## Make it load every session (recommended)
 
@@ -118,6 +121,47 @@ goes into the chat's context. Add this to `~/.claude/settings.json` (merge it in
 
 The single quotes make it print the same line in Git Bash and in PowerShell (the shells hooks run in on Windows).
 claude.ai chats have no hooks: there the skill's rule for after a compact does the same job.
+
+**Codex** (`~/.codex/hooks.json`; Codex asks you to trust the hook once in `/hooks`) and **Antigravity**
+(`~/.gemini/config/hooks.json`) read JSON, so they run `scripts/session-hook.py`, which prints the same reminder in
+their format. Use the full path of your skill folder (forward slashes work on Windows too):
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"<skill folder>/scripts/session-hook.py\" --tool codex",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+```json
+{
+  "handoff-session-start": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "python \"<skill folder>/scripts/session-hook.py\" --tool antigravity",
+        "timeout": 10
+      }
+    ]
+  }
+}
+```
+
+Merge them into an existing file's `"hooks"` block (Codex) or next to its other named entries (Antigravity). Hooks are a
+second line: the skill's own rule for after a compact still applies. In T3 Code, Antigravity's hooks don't run and
+Codex runs only hooks already trusted in Codex.
 
 ## Update
 

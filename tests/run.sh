@@ -1,21 +1,46 @@
 #!/bin/sh
-# Tests for skills/handoff/scripts/check-summary.sh.   Run from anywhere: sh tests/run.sh
-# Each case copies tests/fixtures/base to a temp folder, changes one thing, runs the checker, and checks the exit code
-# and one expected output line. Plain sh, awk and sed (the CI runs it on Ubuntu; it also runs in Git Bash).
+# Tests for skills/handoff/scripts: check-summary.sh, record-stop.sh and their Python twins.   sh tests/run.sh
+# Each case copies tests/fixtures/base to a temp folder, changes one thing, runs the script, and checks the exit code
+# and one expected output line. Every case also runs the .py twin on an identical copy: the case passes only when the
+# twin prints the same output, exits with the same code and leaves the same files.
+# Plain sh, awk and sed (the CI runs it on Ubuntu, macOS and Windows Git Bash) plus Python 3.8+ ($PYTHON, python3 or
+# python).
 set -u
 root=$(cd "$(dirname "$0")/.." && pwd)
 check="$root/skills/handoff/scripts/check-summary.sh"
 base="$root/tests/fixtures/base"
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
+# Git Bash: a C:/... temp path, so paths written into test summaries also work for a native Windows Python.
+if command -v cygpath >/dev/null 2>&1; then tmp=$(cygpath -m "$tmp"); fi
+py=${PYTHON:-}
+if [ -z "$py" ]; then
+  for c in python3 python; do
+    if "$c" -c 'import sys; sys.exit(sys.version_info < (3, 8))' >/dev/null 2>&1; then py=$c; break; fi
+  done
+fi
+[ -n "$py" ] || { echo "FAIL: Python 3.8+ not found (set PYTHON=...): the .py twins can't be tested"; exit 1; }
+echo "python: $("$py" --version 2>&1)"
 pass=0
 fail=0
+
+# twin <name> <sh output> <sh exit> <py output> <py exit>: the Python twin must print and exit the same
+twin() {
+  if [ "$2" = "$4" ] && [ "$3" = "$5" ]; then return 0; fi
+  fail=$((fail + 1)); echo "FAIL $1 (python twin differs: exit $5, sh $3)"
+  printf '%s\n' "$2" > "$tmp/out.sh"; printf '%s\n' "$4" > "$tmp/out.py"
+  diff "$tmp/out.sh" "$tmp/out.py" | sed 's/^/     /'
+  return 1
+}
 
 # run <name> <expected exit> <expected text> [file]
 run() {
   file=${4:-$tmp/c/ai-handoff-summary.md}
   got=$(sh "$check" "$file" 2>&1)
   code=$?
+  pgot=$("$py" "${check%.sh}.py" "$file" 2>&1)
+  pcode=$?
+  twin "$1" "$got" "$code" "$pgot" "$pcode" || return 0
   if [ "$code" = "$2" ] && printf '%s\n' "$got" | awk -v t="$3" 'index($0, t) { found = 1 } END { exit !found }'; then
     pass=$((pass + 1))
     echo "ok   $1"
@@ -55,6 +80,9 @@ run "161-character line" 1 "FAIL line 7: 161 characters (at most 160)"
 
 fresh; edit '{ print } /^## Now/ { s = "- "; for (i = 0; i < 158; i++) s = s "x"; print s }'
 run "160-character line passes" 0 "OK:"
+
+fresh; edit '{ print } /^## Now/ { s = "- "; for (i = 0; i < 158; i++) s = s "\303\251"; print s }'
+run "UTF-8 letters count once (160 passes)" 0 "OK:"
 
 fresh; edit '{ print } /^## Verified facts/ { print "- A fact with no tag" }'
 run "untagged fact" 1 "FAIL line 14: fact without a [verified YYYY-MM-DD: how] or [unverified: source] tag"
@@ -137,7 +165,13 @@ board() {
 # rs <name> <expected exit> <expected text> -- <record-stop options>
 rs() {
   n=$1 x=$2 t=$3; shift 4
+  rm -rf "$tmp/p"; [ ! -d "$tmp/c" ] || cp -R "$tmp/c" "$tmp/p"
   got=$(sh "$stop" --root "$tmp/c" "$@" 2>&1); code=$?
+  pgot=$("$py" "${stop%.sh}.py" --root "$tmp/p" "$@" 2>&1); pcode=$?
+  twin "$n" "$got" "$code" "$pgot" "$pcode" || return 0
+  if [ -d "$tmp/c" ] && ! diff -r "$tmp/c" "$tmp/p" > "$tmp/tree" 2>&1; then
+    fail=$((fail + 1)); echo "FAIL $n (python twin left other files)"; sed 's/^/     /' "$tmp/tree"; return 0
+  fi
   if [ "$code" = "$x" ] && printf '%s\n' "$got" | awk -v t="$t" 'index($0, t) { f = 1 } END { exit !f }'; then
     pass=$((pass + 1)); echo "ok   $n"
   else
@@ -192,6 +226,9 @@ rs "stop: CRLF summary" 0 "OK: stop recorded" -- --last "crlf" --next "keep endi
 n=$(awk -v BINMODE=3 '/\r$/ { n++ } END { print n + 0 }' "$tmp/c/ai-handoff-summary.md"); [ "$n" = 34 ] && { pass=$((pass + 1)); echo "ok   stop: CRLF kept"; } \
   || { fail=$((fail + 1)); echo "FAIL stop: CRLF kept ($n CRLF lines)"; }
 
+rs "stop: UTF-8 text" 0 "OK:" -- --last "Café menu déployé" --next "Vérifier" --eod "C Café: fait [verified: ls]"
+has "stop: UTF-8 kept" "$tmp/c/ai-handoff-summary.md" "Last change: Café menu déployé"
+
 RECORD_STOP_NOW="2026-11-18 09:12 +0530" rs "stop: half-hour timezone" 0 "OK:" -- --last x --next y
 has "stop: UTC+5:30" "$tmp/c/ai-handoff-summary.md" "Updated: 2026-11-18 09:12 UTC+5:30 | By: test fixture"
 
@@ -215,6 +252,25 @@ left=$(ls -A "$tmp/c" | grep -c 'record-stop'); [ "$left" = 0 ] && { pass=$((pas
 board; edit '!/^## Next action/'
 rs "stop: summary without Next action" 1 "no ## Next action heading" -- --last x --next y
 rs "stop: no summary" 2 "not found" -- --root "$tmp/none" --last x --next y
+
+# ---- session-hook.py: the reminder in each tool's SessionStart format ----
+hook="$root/skills/handoff/scripts/session-hook.py"
+# hk <name> <tool> <Python expression on the output o>
+hk() {
+  got=$("$py" "$hook" --tool "$2" 2>&1); code=$?
+  if [ "$code" = 0 ] && printf '%s' "$got" | "$py" -c "import json, sys; o = sys.stdin.read(); assert $3"; then
+    pass=$((pass + 1)); echo "ok   $1"
+  else
+    fail=$((fail + 1)); echo "FAIL $1 (exit $code)"; printf '%s\n' "$got" | sed 's/^/     /'
+  fi
+}
+hk "hook: claude plain text" claude "o.startswith('Context was compacted') and 'ai-handoff-summary.md' in o"
+hk "hook: codex JSON" codex \
+  "json.loads(o)['hookSpecificOutput']['hookEventName'] == 'SessionStart' and 'ai-handoff-summary.md' in o"
+hk "hook: antigravity JSON" antigravity \
+  "'ai-handoff-summary.md' in json.loads(o)['injectSteps'][0]['systemMessage']['systemMessage']"
+"$py" "$hook" --tool other >/dev/null 2>&1; [ $? = 2 ] && { pass=$((pass + 1)); echo "ok   hook: unknown tool exits 2"; } \
+  || { fail=$((fail + 1)); echo "FAIL hook: unknown tool"; }
 
 echo "$pass passed, $fail failed"
 [ "$fail" = 0 ]
